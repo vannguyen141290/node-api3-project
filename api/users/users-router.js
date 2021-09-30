@@ -1,12 +1,12 @@
-const express = require('express');
-const { validateUserId, validateUser, validatePost } = require('../middleware/middleware');
+const express = require('express')
+const { validateUserId, validateUser, validatePost } = require('../middleware/middleware')
 const Users = require('./users-model')
 const Posts = require('../posts/posts-model')
 
 // You will need `users-model.js` and `posts-model.js` both
 // The middleware functions also need to be required
 
-const router = express.Router();
+const router = express.Router()
 
 router.get('/', async (req, res, next) => {
   try {
@@ -15,11 +15,11 @@ router.get('/', async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-});
+})
 
 router.get('/:id', validateUserId, (req, res) => {
   res.status(200).json(req.user)
-});
+})
 
 router.post('/', validateUser, (req, res, next) => {
   Users.insert(req.body)
@@ -27,7 +27,7 @@ router.post('/', validateUser, (req, res, next) => {
       res.status(201).json(user)
     })
     .catch(next)
-});
+})
 
 router.put('/:id', validateUserId, validateUser, (req, res, next) => {
   Users.update(req.params.id, req.body)
@@ -35,7 +35,7 @@ router.put('/:id', validateUserId, validateUser, (req, res, next) => {
       res.status(200).json(user)
     })
     .catch(next)
-});
+})
 
 router.delete('/:id', validateUserId, async (req, res, next) => {
   try {
@@ -45,7 +45,7 @@ router.delete('/:id', validateUserId, async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-});
+})
 
 router.get('/:id/posts',validateUserId, (req, res, next) => {
   Users.getUserPosts(req.params.id)
@@ -53,7 +53,7 @@ router.get('/:id/posts',validateUserId, (req, res, next) => {
       res.status(200).json(posts)
     })
     .catch(next)
-});
+})
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res, next) => {
   Posts.insert({
@@ -64,6 +64,6 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res, next) => {
       res.status(201).json(post)
     })
     .catch(next)
-});
+})
 
-module.exports = router;
+module.exports = router
