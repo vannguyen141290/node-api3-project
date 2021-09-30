@@ -3,9 +3,6 @@ const { validateUserId, validateUser, validatePost } = require('../middleware/mi
 const Users = require('./users-model')
 const Posts = require('../posts/posts-model')
 
-// You will need `users-model.js` and `posts-model.js` both
-// The middleware functions also need to be required
-
 const router = express.Router()
 
 router.get('/', async (req, res, next) => {
@@ -29,41 +26,55 @@ router.post('/', validateUser, (req, res, next) => {
     .catch(next)
 })
 
-router.put('/:id', validateUserId, validateUser, (req, res, next) => {
-  Users.update(req.params.id, req.body)
-    .then(user => {
-      res.status(200).json(user)
-    })
-    .catch(next)
-})
-
-router.delete('/:id', validateUserId, async (req, res, next) => {
-  try {
-    const deletedUser = await Users.getById(req.params.id)
-    await Users.remove(req.params.id)
-    res.status(200).json(deletedUser)
-  } catch (error) {
-    next(error)
-  }
-})
-
-router.get('/:id/posts',validateUserId, (req, res, next) => {
-  Users.getUserPosts(req.params.id)
-    .then(posts => {
-      res.status(200).json(posts)
-    })
-    .catch(next)
-})
-
-router.post('/:id/posts', validateUserId, validatePost, (req, res, next) => {
-  Posts.insert({
-    text: req.body.text,
-    user_id: req.params.id
+router.put(
+  '/:id',
+  validateUserId,
+  validateUser,
+  (req, res, next) => {
+    Users.update(req.params.id, req.body)
+      .then(user => {
+        res.status(200).json(user)
+      })
+      .catch(next)
   })
-    .then(post => {
-      res.status(201).json(post)
+
+router.delete(
+  '/:id',
+  validateUserId,
+  async (req, res, next) => {
+    try {
+      const deletedUser = await Users.getById(req.params.id)
+      await Users.remove(req.params.id)
+      res.status(200).json(deletedUser)
+    } catch (error) {
+      next(error)
+    }
+  })
+
+router.get(
+  '/:id/posts',
+  validateUserId,
+  (req, res, next) => {
+    Users.getUserPosts(req.params.id)
+      .then(posts => {
+        res.status(200).json(posts)
+      })
+      .catch(next)
+  })
+
+router.post(
+  '/:id/posts',
+  validateUserId,
+  validatePost,
+  (req, res, next) => {
+    Posts.insert({
+      text: req.body.text,
+      user_id: req.params.id
     })
-    .catch(next)
-})
+      .then(post => {
+        res.status(201).json(post)
+      })
+      .catch(next)
+  })
 
 module.exports = router

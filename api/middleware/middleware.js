@@ -3,7 +3,10 @@ const userSchema = require('../../validations/userSchema')
 const postSchema = require('../../validations/postSchema')
 
 function logger(req, res, next) {
-  console.log(`[${new Date().toISOString()}] ${req.method} request to ${req.originalUrl}`)
+  const timestamp = new Date().toISOString()
+  const method = req.method
+  const url = req.originalUrl
+  console.log(`[${timestamp}] ${method} request to ${url}`)
   next()
 }
 
@@ -16,7 +19,7 @@ async function validateUserId(req, res, next) {
     } else {
       next({
         status: 404,
-        message: "user not found"
+        message: 'user not found'
       })
     }
   } catch (error) {
@@ -34,7 +37,7 @@ async function validateUser(req, res, next) {
     next()
   } catch (err) {
     res.status(400).json({
-      message: "missing required name field"
+      message: 'missing required name field'
     })
   }
 }

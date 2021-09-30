@@ -23,8 +23,10 @@ server.use(errorHandling)
 
 module.exports = server
 
-function errorHandling(err, req, res, next) {
+function errorHandling(err, req, res, next) { //eslint-disable-line
   res.status(err.status || 500).json({
+    customMessage: 'Something is wrong with server',
+    stack: err.stack,
     message: err.message,
   })
 }
